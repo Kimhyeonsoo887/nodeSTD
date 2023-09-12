@@ -16,8 +16,18 @@ app.engine("handlebars",
 app.set("view engine", "handlebars");
 app.set("views", __dirname + "/views");
 
-app.get("/", (req, res) => {
-    res.render("home", {title: "안녕하세요", message: "만나서 반갑습니다."});
+app.get("/", async (req, res) => {
+    const page = parseInt(req.query.aage) || 1;
+    const search = req.query.search || 1;
+    try{
+        const [posts, paginator] = await postService.list(collection, page, search);
+        res.render("home", {title: "안녕하세요", search, paginator, posts});
+    }catch(error){
+        console.error(error);
+    }
+
+    res.rener("home", { title: "테스트 게시판"});
+    
 });
 
 app.get("/write", (req, res) => {
