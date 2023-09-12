@@ -4,7 +4,7 @@ const app = express();
 const mongodbConnection = require("./configs/mongodb-connection");
 
 const postService = require("./services/post-service");
-
+let collection;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
 
@@ -26,7 +26,6 @@ app.get("/", async (req, res) => {
         console.error(error);
     }
 
-    res.rener("home", { title: "테스트 게시판"});
     
 });
 
@@ -35,6 +34,7 @@ app.get("/write", (req, res) => {
 });
 
 app.post("/write", async (req, res) => {
+
     const post = req.body;
     //글쓰기 후 결과 반환
     const result = await postService.writePost(collection, post);
@@ -46,7 +46,7 @@ app.get("/detail/:id", async (req, res) => {
     res.render("detail", { title: "테스트 게시판"});
 });
 
-let collection;
+
 app.listen(3000, async() => {
     console.log("Server started");
 

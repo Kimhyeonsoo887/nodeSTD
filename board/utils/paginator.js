@@ -11,7 +11,7 @@ module.exports = ({ totalCount, page, perPage = 10}) => {
     }
     const startPage = quotient * PAGE_LIST_SIZE + 1;
 
-    const endPage = startPage + PAGE_LIST_SIZE - 1 < titoePage ? startPage + PAGE_LIST_SIZE -1 : totalPage;
+    const endPage = startPage + PAGE_LIST_SIZE - 1 < totalPage ? startPage + PAGE_LIST_SIZE -1 : totalPage;
     const isFirstPage = page === 1;
     const isLastPage = page === totalPage;
     const hasPrev = page > 1;
