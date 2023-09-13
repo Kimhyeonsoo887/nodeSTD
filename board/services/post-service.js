@@ -1,4 +1,5 @@
 const paginator = require("../utils/paginator");
+const { ObjectId } = require("mongodb");
 
 async function list(collection, page, search){
     const perPage = 10;
@@ -21,7 +22,43 @@ async function writePost(collection, post){
     return await collection.insertOne(post);
 }
 
+//패스워드는 노출 한 필요가 없으므로 결괏값으로 가져오지 않음
+const projectionOption = {
+    projection: {
+        //프로젝션(투영) 결과값에서 일부만 가져올 때 사용
+        password: 0,
+        "comments.password": 0,
+    },
+};
+
+async function getDetailPost(collection, id){
+    return await collection.findOneAndUpdate({ _id: ObjectId(id)}, { $inc: {hits: 1} }, projectionOption);
+}
+
+async function getPostByIdAndPassword(collection, { id, password}){
+    //findOne() 함수 사용
+    return await collection.findOne({ _id: ObjectId(id), password: password}, projectionOption);
+
+}
+
+async function getPostById(collection, id){
+    return await collection.findOne({ _id: ObjectId(id), projectionOption});
+}
+
+async function updatePost(collection, id, post){
+    const toUpdatePost = {
+        $set: {
+            ...post,
+        },
+    };
+    return await collection.updateOne({ _id: ObjectId(id)}, toUpdatePost);
+}
 module.exports = {
     list,
     writePost,
+    getDetailPost,
+    getPostByIdAndPassword,
+    getPostById,
+    updatePost,
+
 }
